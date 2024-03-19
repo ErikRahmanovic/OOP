@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+#include<algorithm>
+
+using namespace std;
+
+class Predmet {
+public:
+    string opis;
+    int kolicina;
+
+    Predmet(int _kolicina, string _opis) : kolicina(_kolicina), opis(_opis) {}
+
+};
+
+class Plaza {
+public:
+    int velicina;
+    double x, y;
+    vector<Predmet> predmeti;
+
+    void dodajPredmet(Predmet p) {
+        predmeti.push_back(p);
+    }
+
+};
+
+int main()
+{
+    int N, M;
+    int redni_broj;
+
+    cout << "Unesite broj plaza(N):";
+    cin >> N;
+    
+    vector<Plaza> plaza(N);
+
+    for (int i = 0; i < N; i++) {
+
+        cout << "Unesite velicinu i lokaciju za " << i + 1 << ". plazu:" << endl;
+        cin >> plaza[i].velicina;
+        cin >> plaza[i].x >> plaza[i].y;
+    }
+
+    cout << "Unesite broj predmeta(M): ";
+    cin >> M;
+
+    for (int i = 0; i < M; i++) {
+        string opis;
+        int kolicina;
+        cout << "Unesite redni broj plaze kojoj pripada " << i + 1 << ". predmet: ";
+        cin >> redni_broj;
+        cout << "Unesite kolicinu i opis predmeta: ";
+        cin >> kolicina >> opis;
+
+        plaza[redni_broj - 1].dodajPredmet(Predmet(kolicina, opis));
+    }
+
+    cout << "Ispis plaza i predmeta:" << endl;
+    
+    for (int i = 0; i < N; i++) {
+        cout << i + 1 << ". " << plaza[i].x << " " << plaza[i].x << "D=" << plaza[i].velicina << " - predmeti: ";
+        for (int j = 0; j < plaza[i].predmeti.size(); j++) {
+            cout << plaza[i].predmeti[j].kolicina << " " << plaza[i].predmeti[j].opis << endl;
+        }
+        cout << endl;
+    }
+
+
+    return 0;
+}
+
