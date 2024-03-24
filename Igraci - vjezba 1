@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include<algorithm>
+
 using namespace std;
 
 class Igrac {
@@ -21,11 +23,24 @@ public:
     vector<Igrac> igraci;
     void dodajIgraca(Igrac igrac);
     void ispisi() {
+        sortirajIgrace();
         cout << naziv << endl;
+        for (int i = 0; i < igraci.size(); i++) {
+            cout << igraci[i].ime << " " << igraci[i].prezime << " " << igraci[i].broj << endl;
+        }
     };
     Igrac dohvatiNajskupljeg();
     int ukupnaCijena();
     int prosjecnaCijena();
+
+    static bool usporedbaIgraci(const Igrac& a, Igrac& b) {
+        return a.broj < b.broj;
+    }
+
+    void sortirajIgrace() {
+        sort(igraci.begin(), igraci.end(), usporedbaIgraci);
+    }
+
 };
 
 
@@ -110,4 +125,6 @@ int main()
 
     cout << "Prosjecna cijena jednog igraca: " << ekipa.prosjecnaCijena() << endl;;
 }
+
+
 
