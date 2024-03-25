@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+class Predmeti {
+public:
+    string naziv;
+    int cijena;
+
+    Predmeti(string _naziv, int _cijena) : naziv(_naziv), cijena(_cijena){}
+};
+
+class Garaza {
+public:
+    int x, y;
+    string lokacija;
+    string upravljanje;
+    vector<Predmeti> predmeti;
+
+    void dodajKljuc(Predmeti k);
+};
+
+void Garaza::dodajKljuc(Predmeti k) {
+    predmeti.push_back(k);
+}
+
+int main() {
+    int N, M;
+
+    cout << "Unesite broj garaza(N):";
+    cin >> N;
+
+    vector<Garaza> garaza(N);
+
+    for (int i = 0; i < garaza.size(); i++) {
+        cout << "Unesite velicinu, lokacij i cjenu za " << i + 1 << ". garazu:" << endl;
+        cin >> garaza[i].x >> garaza[i].y;
+        cin.ignore();
+        getline(cin, garaza[i].lokacija);
+        cin >> garaza[i].upravljanje;
+    }
+
+    cout << "Unesite broj predmeta (M):";
+    cin >> M;
+
+    for (int i = 0; i < M; i++) {
+        int broj_garaze;
+        string naziv;
+        int cijena;
+        cout << "Unesite redni broj garaze kojoj pripada " << i + 1 << ". predmet : ";
+        cin >> broj_garaze;
+        cout << "Unesite naziv i vrijednost predmeta: ";
+        cin >> naziv >> cijena;
+
+        garaza[broj_garaze - 1].dodajKljuc(Predmeti(naziv, cijena));
+    }
+
+    cout << "Ispis garaza i predmeta:" << endl;
+    for (int i = 0; i < garaza.size(); i++) {
+        cout << i + 1 << ". " << garaza[i].lokacija << " " << garaza[i].x << "x" << garaza[i].y << " - predmeti: ";
+        for (int j = 0; j < garaza[i].predmeti.size(); j++) {
+            cout << garaza[i].predmeti[j].naziv << " " << garaza[i].predmeti[j].cijena << "kn" << endl;
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
