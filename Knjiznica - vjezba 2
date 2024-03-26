@@ -1,0 +1,85 @@
+#include <iostream>
+#include <vector>
+#include<string>
+#include <algorithm>
+
+using namespace std;
+
+class Knjiga {
+public:
+    string naslov;
+    string autor;
+    int posudene;
+    int dostupne;
+
+    Knjiga(string _naslov, string _autor, int _posudene, int _dostupne) : naslov(_naslov), autor(_autor), posudene(_posudene), dostupne(_dostupne) {}
+};
+
+class Knjiznica {
+public:
+    string naziv;
+    string adresa;
+    vector<Knjiga> knjige;
+    
+    void PriKrajuZaliha();
+    static bool SortirajKnjige(Knjiga k1, Knjiga k2);
+    void Sortiraj();
+
+    Knjiznica(string _naziv, string _adresa, Knjiga _knjige) : naziv(_naziv), adresa(_adresa) {
+        knjige.push_back(_knjige);
+    }
+
+};
+
+bool Knjiznica::SortirajKnjige(Knjiga k1, Knjiga k2) {
+    return k1.dostupne < k2.dostupne;
+}
+
+void Knjiznica::Sortiraj() {
+    sort(knjige.begin(), knjige.end(), SortirajKnjige);
+}
+
+void Knjiznica::PriKrajuZaliha() {
+    for (int i = 0; i < knjige.size(); i++) {
+        if (knjige[i].dostupne < 10) {
+            cout << knjige[i].naslov << " " << knjige[i].autor << endl;
+        }
+    }
+}
+
+Knjiznica NajvisePrimjeraka(vector<Knjiznica> knjiznice) {
+    Knjiznica dostupne = knjiznice[0];
+    int MaxDostupne = 0;
+
+    for (int i = 1; i < knjiznice.size(); i++) {
+        int UkupnoDostupne = 0;
+        for (int j = 0; j < knjiznice[i].knjige.size(); j++) {
+            UkupnoDostupne += knjiznice[i].knjige[j].dostupne;
+        }
+        if (MaxDostupne < UkupnoDostupne) {
+            MaxDostupne = UkupnoDostupne;
+            dostupne = knjiznice[i];
+        }
+    }
+
+    return dostupne;
+}
+
+int main()
+{
+  
+    Knjiga knjiga("Knjiga 1", "Autor 1", 20, 15);
+    Knjiznica knjiznica("Knjiznica 1", "Adresa 1", knjiga);
+    
+    vector<Knjiznica> knjiznice = {knjiznica};
+  
+    
+    
+    knjiznica.PriKrajuZaliha();
+    
+    knjiznica.Sortiraj();
+
+    Knjiznica najKnjiznica = NajvisePrimjeraka(knjiznice);
+
+    return 0;
+}
