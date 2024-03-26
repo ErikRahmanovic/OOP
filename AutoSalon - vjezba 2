@@ -1,0 +1,108 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class Automobil {
+public:
+	string naziv;
+	string gorivo; 
+	int konjeskaSnaga; 
+	int cijena;
+
+	Automobil(string _naziv, string _gorivo, int _konjskaSnaga, int _cijena) : naziv(_naziv), gorivo(_gorivo), konjeskaSnaga(_konjskaSnaga), cijena(_cijena) {}
+
+};
+
+class AutoSalon {
+public:
+	string naziv;
+	string adresa; 
+	vector<Automobil> automobili;
+
+	AutoSalon(string _naziv, string _adresa, vector<Automobil> _automobili) : naziv(_naziv), adresa(_adresa), automobili(_automobili) {}
+
+	vector<Automobil> NajsnaznijiMotor();
+	static bool SortirajAutomobile(Automobil a1, Automobil a2);
+	void Sortiraj();
+
+
+};
+
+bool AutoSalon::SortirajAutomobile(Automobil a1, Automobil a2) {
+	return a1.konjeskaSnaga < a2.konjeskaSnaga;
+}
+
+void AutoSalon::Sortiraj() {
+	sort(automobili.begin(), automobili.end(), SortirajAutomobile);
+}
+
+
+vector<Automobil> AutoSalon::NajsnaznijiMotor() {
+	vector<Automobil> snazniMotor;
+	for (int i = 0; i < automobili.size(); i++) {
+		if (automobili[i].konjeskaSnaga > 100) {
+			snazniMotor.push_back(automobili[i]);
+		}
+	}
+
+	return snazniMotor;
+
+}
+
+AutoSalon NajskupljiAutoSalon(const vector<AutoSalon>& autosaloni) {
+	AutoSalon najskuplji = autosaloni[0];
+	double najskupljiCijena = 0;
+
+
+	for (int i = 0; i < autosaloni.size(); i++) {
+		double prosjecnaCijena = 0;
+		double ukupnaCijena = 0;
+		for (int j = 0; j < autosaloni[i].automobili.size(); j++) {
+			ukupnaCijena += autosaloni[i].automobili[j].cijena;
+		}
+		prosjecnaCijena = ukupnaCijena / autosaloni[i].automobili.size();
+
+		if (najskupljiCijena < prosjecnaCijena) {
+			najskupljiCijena = prosjecnaCijena;
+			najskuplji = autosaloni[i];
+		}
+	}
+
+
+
+	return najskuplji;
+}
+
+int main()
+{
+	vector<Automobil> auti = { Automobil("BMW 118i", "benzin", 150, 225000), Automobil("Dacia Duster", "plin", 91, 114200), Automobil("Citroen C3", "disel", 110, 127000) };
+	AutoSalon autosalon("Auto Salon", "Rijecka cesta 200, Rijeka", auti);
+
+	vector<Automobil> snazniAutomobil = autosalon.NajsnaznijiMotor();
+
+	vector<AutoSalon> autosaloni = {autosalon};
+
+	
+
+	cout << "Automobili s snagom motora vecom od 100KS:" << endl;
+	for (int i = 0; i < snazniAutomobil.size(); i++) {
+		cout << "Naziv: " << snazniAutomobil[i].naziv << ", Snaga: " << snazniAutomobil[i].konjeskaSnaga << "KS" << endl;
+	}
+
+	
+
+	autosalon.Sortiraj();
+
+	for (int i = 0; i < auti.size(); i++) {
+		cout << autosalon.automobili[i].naziv << " " << autosalon.automobili[i].konjeskaSnaga << " " << endl;
+	}
+
+	AutoSalon najskupljiSalon = NajskupljiAutoSalon(autosaloni);
+	cout << "Najskuplji auto salon je: " << najskupljiSalon.naziv << endl;
+
+	return 0;
+}
+
