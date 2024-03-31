@@ -1,0 +1,182 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class Cvijet {
+public:
+    string vrsta;
+    string boja;
+    int kolicina;
+
+    Cvijet(string _vrsta, string _boja, int _kolicina) : vrsta(_vrsta), boja(_boja), kolicina(_kolicina) {
+        cout << "Cvijet constructor called" << endl;
+    }
+
+    ~Cvijet() {
+        cout << "Cvijet destructor called" << endl;
+    }
+};
+
+class Vrt {
+private:
+    string adresa;
+    string vlasnik;
+    float sirina;
+    float duljina;
+
+public:
+    vector<Cvijet> cvijet;
+
+    string getAdresa() const;
+    string getVlasnik() const;
+    float getSirina() const;
+    float getDuljina() const;
+
+    void setAdresa(string novaAdresa);
+    void setVlasnik(string noviVlasnik);
+    void setSirina(float novaSirina);
+    void setDuljina(float novaDuljina);
+
+    string formatirajVlasnik(string noviVlasnik);
+    float kreirajVrt();
+    void dodajCvijet1(Cvijet z);
+    void dodajCvijet2(Cvijet& z);
+    void dodajCvijet3(Cvijet* z);
+    void ispisSvihCvijetova();
+
+    Cvijet nadjiCvijet1(string vrsta);
+    Cvijet* nadjiCvijet2(string vrsta);
+    Cvijet& nadjiCvijet3(string vrsta);
+    
+};
+
+void Vrt::setAdresa(string novaAdresa) {
+    adresa = novaAdresa;
+}
+
+string Vrt::getAdresa() const {
+    return adresa;
+}
+
+void Vrt::setVlasnik(string noviVlasnik) {
+    vlasnik = formatirajVlasnik(noviVlasnik);
+}
+
+string Vrt::getVlasnik() const { 
+    return vlasnik;
+}
+
+void Vrt::setSirina(float novaSirina) {
+    sirina = novaSirina;
+}
+
+float Vrt::getSirina() const {
+    return sirina;
+}
+
+void Vrt::setDuljina(float novaDuljina) {
+    duljina = novaDuljina;
+}
+
+float Vrt::getDuljina() const {
+    return duljina;
+}
+
+float Vrt::kreirajVrt() {
+    float povrsina = 0;
+    do {
+        cin >> sirina;
+        cin >> duljina;
+        povrsina = sirina * duljina;
+    } while (povrsina < 10);
+
+    return povrsina;
+}
+
+void Vrt::dodajCvijet1(Cvijet z){
+    cvijet.push_back(z);
+}
+
+void Vrt::dodajCvijet2(Cvijet& z) {
+    cvijet.push_back(z);
+}
+
+void Vrt::dodajCvijet3(Cvijet* z) {
+    cvijet.push_back(*z);
+}
+
+void Vrt::ispisSvihCvijetova() {
+    for (int i = 0; i < cvijet.size(); i++) {
+        cout << cvijet[i].vrsta << " " << cvijet[i].boja << " " << cvijet[i].kolicina << endl;
+    }
+}
+
+Cvijet Vrt::nadjiCvijet1(string vrsta) {
+    for (int i = 0; i < cvijet.size(); i++) {
+        if (cvijet[i].vrsta == vrsta) {
+            cvijet[i].kolicina = 2;
+            return cvijet[i];
+        }
+    }
+}
+
+Cvijet* Vrt::nadjiCvijet2(string vrsta) {
+    for (int i = 0; i < cvijet.size(); i++) {
+        if (cvijet[i].vrsta == vrsta) {
+            cvijet[i].vrsta = "Ruza";
+            return &cvijet[i];
+        }
+    }
+    return nullptr;
+};
+
+Cvijet& Vrt::nadjiCvijet3(string vrsta) {
+    for (int i = 0; i < cvijet.size(); i++) {
+        if (cvijet[i].vrsta == vrsta) {
+            cvijet[i].boja = "Crvena";
+            return cvijet[i];
+        }
+    }
+};
+
+string Vrt::formatirajVlasnik(string noviVlasnik) {
+    string Vlasnik = noviVlasnik;
+    Vlasnik[0] = toupper(Vlasnik[0]);
+    for (int i = 1; i < Vlasnik.size(); i++) {
+        Vlasnik[i] = tolower(Vlasnik[i]);
+    }
+
+    return Vlasnik;
+}
+
+
+
+
+int main()
+{
+    Vrt vrt;
+    Cvijet cvijet1("Suncokret", "Zuta", 12);
+    Cvijet cvijet2("Kalifornijski mak", "narancasta", 7);
+    Cvijet cvijet3("Tulipan", "Ljuibcasta", 14);
+
+    vrt.kreirajVrt();
+
+    vrt.dodajCvijet1(cvijet1);
+    vrt.dodajCvijet2(cvijet2);
+    vrt.dodajCvijet3(&cvijet3);
+
+    vrt.ispisSvihCvijetova();
+
+    Cvijet prvi = vrt.nadjiCvijet1("Suncokret");
+    Cvijet* drugi = vrt.nadjiCvijet2("Kalifornijski mak");
+    Cvijet& treci = vrt.nadjiCvijet3("Tulipan");
+
+
+    vrt.ispisSvihCvijetova();
+
+
+    return 0;
+}
