@@ -1,0 +1,154 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class Knjiga {
+public:
+	string autor;
+	string naslov;
+	string ISBN;
+
+	Knjiga(string _autor, string _naslov, string _ISBN) : autor(_autor), naslov(_naslov), ISBN(_ISBN) {
+		cout << "Knjiga constructor called" << endl;
+	}
+	~Knjiga() {
+		cout << "Knjiga destructor called" << endl;
+	}
+};
+
+class Knjiznica {
+private:
+	string adresa;
+	string naziv;
+	string kategorija;
+
+public:
+	vector<Knjiga> knjige;
+	
+	string getAdresa() const;
+	string getNaziv() const;
+	string getKategorija() const;
+	
+	void setAdresa(string novaAdresa);
+	void setNaziv(string noviNaziv);
+	void setKategorija(string novaKategorija);
+
+	string formatirajNaziv(string noviNaziv);
+
+	void dodajKnjigu1(Knjiga z);
+	void dodajKnjigu2(Knjiga& z);
+	void dodajKnjigu3(Knjiga* z);
+
+	void ispisiSvihKnjiga();
+
+	Knjiga nadjiKnjigu1(string isbn);
+	Knjiga* nadjiKnjigu2(string isbn);
+	Knjiga& nadjiKnjigu3(string isbn);
+};
+
+string Knjiznica::formatirajNaziv(string noviNaziv) {
+	
+	noviNaziv[0] = toupper(noviNaziv[0]);
+	for (int i = 1; i < noviNaziv.size(); i++) {
+		noviNaziv[i] = tolower(noviNaziv[i]); 
+	}
+
+
+	return noviNaziv;
+}
+
+string Knjiznica::getAdresa() const{
+	return adresa;
+}
+
+string Knjiznica::getNaziv() const {
+	return naziv;
+}
+
+string Knjiznica::getKategorija() const {
+	return kategorija;
+}
+
+void Knjiznica::setNaziv(string noviNaziv) {
+	naziv = formatirajNaziv(noviNaziv);
+}
+
+void Knjiznica::setAdresa(string novaAdresa) {
+	adresa = novaAdresa;
+}
+
+void Knjiznica::setKategorija(string novaKategorija) {
+	if (novaKategorija == "djecja" || novaKategorija == "znanstvena" || novaKategorija == "citaonica" || novaKategorija == "opcenito") {
+		kategorija = novaKategorija;
+	}
+	else {
+		cout << "Neispravna kategorija";
+	}
+}
+
+void Knjiznica::dodajKnjigu1(Knjiga z) {
+	knjige.push_back(z);
+}
+
+void Knjiznica::dodajKnjigu2(Knjiga& z) {
+	knjige.push_back(z);
+}
+
+void Knjiznica::dodajKnjigu3(Knjiga* z) {
+	knjige.push_back(*z);
+}
+
+void Knjiznica::ispisiSvihKnjiga() {
+	for (int i = 0; i < knjige.size(); i++) {
+		cout << knjige[i].naslov << " " << knjige[i].autor << endl;
+	}
+}
+Knjiga Knjiznica::nadjiKnjigu1(string isbn) {
+	for (int i = 0; i < knjige.size(); i++) {
+		if (knjige[i].ISBN == isbn) {
+			return knjige[i];
+		}
+	}
+}
+Knjiga* Knjiznica::nadjiKnjigu2(string isbn) {
+	for (int i = 0; i < knjige.size(); i++) {
+		if (knjige[i].ISBN == isbn) {
+			return &knjige[i];
+		}
+	}
+	return nullptr;
+}
+Knjiga& Knjiznica::nadjiKnjigu3(string isbn) {
+	for (int i = 0; i < knjige.size(); i++) {
+		if (knjige[i].ISBN == isbn) {
+			return knjige[i];
+		}
+	}
+}
+
+int main()
+{
+
+	Knjiznica knjiznica;
+	knjiznica.setNaziv("knjiznica");
+	knjiznica.setAdresa("Adresa 123");
+	knjiznica.setKategorija("opcenito");
+
+	Knjiga knjiga1("Knjiga 1", "Autor 1", "9102346723");
+	Knjiga knjiga2("Knjiga 2", "Autor 2", "72319752");
+	Knjiga knjiga3("Knjiga 3", "Autor 3", "7126508736");
+
+	knjiznica.dodajKnjigu1(knjiga1);
+	knjiznica.dodajKnjigu2(knjiga2);
+	knjiznica.dodajKnjigu3(&knjiga3);
+
+
+	knjiznica.ispisiSvihKnjiga();
+
+	
+
+	return 0;
+}
