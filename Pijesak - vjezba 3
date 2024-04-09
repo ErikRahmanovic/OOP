@@ -1,0 +1,87 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Zrno {
+public:
+    string boja;
+    float promjer;
+};
+class Pijesak {
+public:
+    int kolicina;
+    Zrno* zrno;
+
+    Pijesak() {}
+
+    Pijesak(int _kolicina) : kolicina(_kolicina) {
+        zrno = new(Zrno);
+    }
+
+    Pijesak(const Pijesak& pijesak) {
+        kolicina = pijesak.kolicina;
+        zrno = new(Zrno);
+        *zrno = *pijesak.zrno;
+    }
+
+    Pijesak(Pijesak&& pijesak) {
+        kolicina = pijesak.kolicina;
+        zrno = pijesak.zrno;
+        pijesak.zrno = NULL;
+        pijesak.kolicina = NULL;
+    }
+
+    Pijesak& operator=(const Pijesak& pijesak) {
+        if (this != &pijesak) {
+            delete zrno;
+            kolicina = pijesak.kolicina;
+            zrno = new(Zrno);
+            *zrno = *pijesak.zrno;
+        }
+
+        return *this;
+    }
+
+    Pijesak& operator=(Pijesak&& pijesak) {
+        if (this != &pijesak) {
+            delete zrno;
+            kolicina = pijesak.kolicina;
+            zrno = pijesak.zrno;
+            pijesak.zrno = NULL;
+            pijesak.kolicina = NULL;
+        }
+        return *this;
+    }
+
+    ~Pijesak() {
+        delete zrno;
+    }
+};
+int main() {
+    Pijesak igraliste(1000000);
+    cout << "Na igralistu ima " << igraliste.kolicina << " zrna pijeska!\n";
+
+    // Demonstrirajte pozive oba konstruktora i oba operatora pridruživanja
+
+    Pijesak igraliste1 = igraliste;
+
+    cout << "Na igralistu ima " << igraliste1.kolicina << " zrna pijeska!\n";
+
+    Pijesak igraliste2;
+    igraliste2 = igraliste;
+
+    cout << "Na igralistu ima " << igraliste2.kolicina << " zrna pijeska!\n";
+
+    Pijesak igraliste3;
+    igraliste3 = move(igraliste2);
+
+    cout << "Na igralistu ima " << igraliste3.kolicina << " zrna pijeska!\n";
+
+
+    Pijesak igraliste4 = move(igraliste);
+
+    cout << "Na igralistu ima " << igraliste4.kolicina << " zrna pijeska!\n";
+
+    return 0;
+}
+
