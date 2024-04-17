@@ -1,0 +1,96 @@
+//Potrebno je napraviti klasu Cigla, te omogućiti lijepljenje jedne cigle na drugu pomoću operatora += .
+//Cigla koja se lijepi se stavlja na plohu istih dimenzija, te joj se treća dimenzija automatski povećava.
+//Cigla se s vremenom može pohabati, pa je i to potrebno omogućiti operatorom-- (svaka dimenzija joj se smanjuje za 1 prilikom habanja).
+//
+//int main()
+//{
+//	Cigla a(1, 2, 3); //1, 2 i 3 su duljine bridova cigle. Cigla je kvadar
+//	Cigla b(2, 3, 4);
+//	a += b; //Lijepimo ciglu b na plohu 2x3 (cigle se lijepe na plohu istih dimenzija), i dobivamo ukupno ciglu veličine 5x2x3
+//
+//	cout << a; //5 x 2 x 3
+//	a += Cigla(3, 5, 1);
+//	cout << a; //5 3 3
+//	a += Cigla(3, 3, 2);
+//	cout << a; //7 x 3 x 3
+//
+//	a--;
+//	a--;
+//	cout << a; // 5 x 1 x 1
+//	return 0;
+//}
+
+#include <iostream>
+
+using namespace std;
+
+class Cigla {
+public:
+    int a;
+    int b;
+    int c;
+
+    Cigla(int _a, int _b, int _c) : a(_a), b(_b), c(_c) {}
+
+
+    Cigla& operator+=(const Cigla& cigla) {
+        int broj;
+
+        if (cigla.a != a && cigla.a != b && cigla.a != c) {
+            broj = cigla.a;
+        }
+        else if (cigla.b != a && cigla.b != b && cigla.b != c) {
+            broj = cigla.b;
+        }
+        else if (cigla.c != a && cigla.c != b && cigla.c != c) {
+            broj = cigla.c;
+        }
+
+        if (a != cigla.a && a != cigla.b && a != cigla.c) {
+            a += broj;
+        }
+        else  if (b != cigla.a && b != cigla.b && b != cigla.c) {
+            b += broj;
+        }
+        else if (c != cigla.a && c != cigla.b && c != cigla.c) {
+            c += broj;
+        }
+        return *this;
+    };
+
+   
+    Cigla& operator--(int) {
+        a--;
+        b--;
+        c--;
+        return *this;
+    }
+   
+};
+
+ostream& operator<<(ostream& izlaz, const Cigla& cigla) {
+    izlaz << cigla.a << " x " << cigla.b << " x " << cigla.c;
+    return izlaz;
+}
+
+
+int main() {
+    Cigla a(1, 2, 3); // 1, 2 i 3 su duljine bridova cigle. Cigla je kvadar
+    Cigla b(2, 3, 4);
+    a += b; // Lijepimo ciglu b na plohu 2x3 (cigle se lijepe na plohu istih dimenzija), i dobivamo ukupno ciglu veličine 5x2x3
+
+    cout << a << endl; // 5 x 2 x 3
+
+    a += Cigla(3, 5, 1);
+    cout << a << endl; // 5 x 3 x 3
+
+    a += Cigla(3, 3, 2);
+    cout << a << endl; // 7 x 3 x 3
+
+    a--;
+    a--;
+    
+    cout << a << endl; // 5 x 1 x 1
+
+    return 0;
+}
