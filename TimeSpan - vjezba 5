@@ -1,0 +1,118 @@
+//Napravite klasu TimeSpan koja mjeri protok vremena u satima, minutama i sekundama.
+//Dodajte potrebne operatore(+, --) kako bi kod funkcionirao prema očekivanju.
+//
+//int main()
+//{
+//    TimeSpan a(1, 0, 0);
+//    a = a + 10;
+//    cout << a;  //1:0:10
+//    a = 65 + a;
+//    cout << a; //1:1:15
+//
+//    for (int i = 0; i < 60 * 60 + 74; i++)
+//        a--;
+//
+//    cout << a; //0:0:1
+//
+//    a--;
+//    a--;
+//
+//    cout << a; //0:0:0
+//
+//    return 0;
+//}
+
+#include <iostream>
+
+using namespace std;
+
+class TimeSpan {
+public:
+    int sati;
+    int minute; 
+    int sekunde;
+
+    TimeSpan(int _sati, int _minute, int _sekunde) : sati(_sati), minute(_minute), sekunde(_sekunde) {}
+    
+  
+    TimeSpan operator--(int) {
+        sekunde--;
+        if (sekunde < 0) {
+            sekunde = 59;
+            minute--;
+            if (minute < 0) {
+                minute = 59;
+                sati--;
+                if (sati < 0) {
+                    sati = 0; 
+                    minute = 0; 
+                    sekunde = 0;
+                }
+            }
+
+        }
+        return *this;
+    }
+};
+
+TimeSpan operator+(TimeSpan vrijeme, int sekunde) {
+    do {
+        if (sekunde > 59) {
+            vrijeme.minute++;
+            if (vrijeme.minute > 59) {
+                vrijeme.minute = 0;
+                vrijeme.sati++;
+            }
+        }
+        else {
+            vrijeme.sekunde += sekunde;
+        }
+        sekunde -= 60;
+    } while (sekunde > 0);
+    return vrijeme;
+}
+
+TimeSpan operator+(int sekunde, TimeSpan vrijeme) {
+    do {
+        if (sekunde > 59) {
+            vrijeme.minute++;
+            if (vrijeme.minute > 59) {
+                vrijeme.minute = 0;
+                vrijeme.sati++;
+            }
+        }
+        else {
+            vrijeme.sekunde += sekunde;
+        }
+        sekunde -= 60;
+    } while (sekunde > 0);
+    return vrijeme;
+}
+
+ostream& operator<<(ostream& izlaz, const TimeSpan& vrijeme) {
+    izlaz << vrijeme.sati << ":" << vrijeme.minute << ":" << vrijeme.sekunde << endl;
+    return izlaz;
+}
+
+
+
+int main()
+{
+    TimeSpan a(1, 0, 0);
+    a = a + 10;
+    cout << a;  //1:0:10
+    a = 65 + a;
+    cout << a; //1:1:15
+
+    for (int i = 0; i < 60 * 60 + 74; i++)
+       a--;
+
+    cout << a; //0:0:1
+
+    a--;
+    a--;
+
+    cout << a; //0:0:0
+
+    return 0;
+}
