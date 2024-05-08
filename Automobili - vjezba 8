@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Automobil {
+public:
+	string ime;
+	
+
+	Automobil(string _ime) : ime(_ime) {}
+	virtual string GetOsiguranjeInfo() {
+		return "Nepoznato";
+	};
+
+	virtual int getTezina() = 0;
+
+	virtual ~Automobil() {};
+};
+
+class AutoPrednjiPogon : public Automobil {
+public:
+	int tezina;
+	
+	AutoPrednjiPogon(string _ime) : Automobil(_ime) {}
+
+	string GetOsiguranjeInfo()  override {
+		return "Generali";
+	}
+	int getTezina() override {
+		tezina = 1500;
+		return tezina;
+	}
+};
+
+class AutoStraznjiPogon : public Automobil {
+public:
+	int tezina;
+
+	AutoStraznjiPogon(string _ime) : Automobil(_ime) {}
+
+	string GetOsiguranjeInfo()  override {
+		return "Euroherc";
+	}
+	int getTezina() override {
+		tezina = 1650;
+		return tezina;
+	}
+};
+
+double ProsjecnaTezina(vector<Automobil*> utrka) {
+	if (utrka.size() == 0) {
+		return 0.0;
+	}
+	else {
+		int ukupnaTezina = 0;
+		for (int i = 0; i < utrka.size(); i++) {
+			ukupnaTezina += utrka[i]->getTezina();
+		}
+		return ukupnaTezina / utrka.size();
+	}
+}
+
+
+int main()
+{
+	AutoStraznjiPogon auto1("Marko");
+
+	cout << auto1.GetOsiguranjeInfo() << endl;
+
+	vector<Automobil*> utrka = { new AutoPrednjiPogon("Ivan"),new AutoStraznjiPogon("Ante"),new AutoPrednjiPogon("Erik") };
+
+	cout << "Prosjecna tezina automobila je:" << ProsjecnaTezina(utrka);
+
+	Automobil* a = new AutoPrednjiPogon("Ante");
+
+
+}
+
