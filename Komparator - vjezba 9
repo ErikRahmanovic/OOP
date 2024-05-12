@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+template<class T>
+class Komparator {
+public:
+    bool vece_ili_jednako(T a, T b) {
+        return a >= b;
+    }
+};
+
+template<class P>
+int usporedi(vector<P> v, Komparator<P> k) {
+    for (int i = 0; i < v.size() - 1; i++) {
+        if (k.vece_ili_jednako(v[i], v[i + 1]) == 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+template<class K, class Komparator1>
+int usporedi(vector<K> v, Komparator1& k) {
+    for (int i = 0; i < v.size() - 1; i++) {
+        if (k.vece_ili_jednako(v[i], v[i + 1]) == 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+int main()
+{
+    vector<int> v = { 12, 2, 1 };
+    
+    vector<int> v1 = { 12, 2, 4 };
+
+    Komparator<int> komparator;
+
+    bool r = usporedi<int>(v, Komparator<int>());
+
+    bool k = usporedi<int>(v1, komparator);
+
+    cout << "rezultat: " << r << endl;  
+
+    cout << "rezultat: " << k << endl;
+    
+    return 0;
+}
+
