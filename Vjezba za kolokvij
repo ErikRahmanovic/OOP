@@ -1,0 +1,267 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+
+namespace Sastanak {
+
+    class NeispravnaTocka : public std::exception {
+    public:
+        const char* what() const throw() {
+            return "Neispravna tocka"; // Exception message
+        }
+    };
+
+    class Odgovor {
+    public:
+        string tekst1;
+
+        Odgovor(string tekst) : tekst1(tekst) {} // Konstruktor koji prima tekst
+        void nadodaj(const string& nadodaj) { // Funkcija za nadodavanje teksta
+            tekst1 += "; " + nadodaj;
+        }
+        string tekst() const { // Funkcija za dohvaćanje teksta
+            return tekst1;
+        }
+
+        
+    };
+
+    class ElementDnevnogReda {
+    public:
+
+
+        virtual string tekstualno() const = 0;
+        virtual ~ElementDnevnogReda() {}
+    };
+
+    class Tocka : public ElementDnevnogReda {
+    public:
+
+        static int unisteno;
+        Odgovor* p_odgovor;
+        int broj;
+        string naziv;
+        string opis;
+
+        Tocka(int _broj, string _naziv, string _opis) : broj(_broj), naziv(_naziv), opis(_opis){
+            if (_opis.empty() || _naziv.empty()) {
+                throw NeispravnaTocka();
+            }
+        }
+
+        Tocka(int _broj, string _naziv, string _opis, Odgovor* _p_odgovor) : broj(_broj), naziv(_naziv), opis(_opis), p_odgovor(_p_odgovor) {
+            if (_opis.empty() || _naziv.empty()) {
+                throw NeispravnaTocka();
+            }
+        }
+
+        Tocka() {
+            broj = 0;
+            naziv = "Tocka 0";
+            opis = "Razno";
+        }
+
+        Tocka(const Tocka& other) // Kopirni konstruktor
+            : broj(other.broj), naziv(other.naziv), opis(other.opis) {
+            if (other.p_odgovor) {
+                p_odgovor = new Odgovor(*other.p_odgovor);
+            }
+            else {
+                p_odgovor = nullptr;
+            }
+        }
+
+        Odgovor* odgovor() const { // Funkcija za dobivanje pokazivača na odgovor
+            return p_odgovor;
+        }
+        Tocka& operator=(const Tocka& tocka2) {
+            if (this != &tocka2) {
+                broj = tocka2.broj;
+                naziv = tocka2.naziv;
+                opis = tocka2.opis;
+            }
+            return *this;
+        }
+
+        operator string() const {
+            return naziv + " - " + opis;
+        }
+
+       string tekstualno() const override {
+            return naziv + " - " + opis;
+        }
+
+        ~Tocka() {
+            unisteno++;
+        }
+        bool operator<(const Tocka& other) const { // Operator manje za sortiranje
+            return broj < other.broj;
+        }
+       
+    };
+
+    
+    int Tocka::unisteno = 0;
+
+    
+    ostream& operator<<(ostream& izlaz, const Tocka& tocka) {
+        izlaz << "Ad" << tocka.broj << ";" << tocka.naziv << ";" << tocka.opis << ";" << endl;
+        return izlaz;
+    }
+
+   template<class T>
+    class Zapisnik {
+    public:
+        vector<T> zapisnik;
+        template<class... T1>
+        void nadodaj(T t, T1... t1) {
+            zapisnik.push_back(t);
+            nadodaj(t1...);
+        }
+
+        void nadodaj() {};
+
+        void ispisi() const{
+            for (int i = 0; i < zapisnik.size(); ++i) {
+                std::cout << zapisnik[i];
+            }
+        }
+    };
+
+   
+};
+
+using Sastanak::Tocka;
+using Sastanak::ElementDnevnogReda;
+
+void ispisi(const vector<Tocka>& tocke) {
+    for (int i = 0; i < tocke.size(); i++) {
+        cout << "Ad" << tocke[i].broj << ";" << tocke[i].naziv << ";" << tocke[i].opis << ";" << endl;
+    }
+};
+
+bool slaganje_tocaka(const Tocka t1, const Tocka t2) {
+    return t1.broj < t2.broj;
+}
+
+bool usporedba_tocaka(const ElementDnevnogReda* t1, const ElementDnevnogReda* t2) { // Funkcija za sortiranje točaka u vektoru po rednom broju
+    const Tocka* tocka1 = dynamic_cast<const Tocka*>(t1); // Dinamička konverzija
+    const Tocka* tocka2 = dynamic_cast<const Tocka*>(t2); // Dinamička konverzija
+    if (tocka1 && tocka2) { // Provjera jesu li obje točke
+        return *tocka1 < *tocka2;
+    }
+    return false;
+}
+
+int main() {
+    //**************************************************************************
+    // [1] --- 1 BOD
+
+    // sav kôd mora biti dio imenskog prostora Sastanak
+    using namespace Sastanak;
+
+
+    //**************************************************************************
+    // [2] --- 2 BODA
+    cout << "--- [2] ---\n";
+
+    Tocka t1(1, "Tocka prva", "Citanje zapisnika");
+    Tocka t2;  // postavlja točku na: 0, "Točka 0", "Razno"
+    Tocka t3(2, "Tocka druga", "Izvjesce povjerenika");
+    Tocka t4(3, "Tocka treca", "Plan rada");
+    vector<Tocka> tocke{ t1, t2, t3, t4 };
+
+    // * ispisuje se "neispravna točka" 
+    // (razred Tocka treba provjeravati jesu li svi podaci navedeni: redni broj, naziv i opis)
+    // * razred NeispravnaTocka mora imati samo konstruktor koji prima tekst
+    // poruke (nema drugih funkcija) i nasljeđivati od razreda "exception"
+    try {
+        Tocka t(4, "Tocka cetvrta", "");  // prazan opis - baca se iznimka
+    }
+    catch (NeispravnaTocka& e) {
+        cout << e.what() << endl;
+    }
+
+    //**************************************************************************
+    // [3] --- 2 BODA
+    cout << "--- [3] ---\n";
+
+    cout << (string)t1 << endl;  // ispisuje "Tocka prva - Citanje zapisnika"
+    cout << t1 << endl;  // ispisuje "Ad1;Tocka prva;Citanje zapisnika"
+
+    //**************************************************************************
+    // [4] --- 4 BODA
+    cout << "--- [4] ---\n";
+
+    // * ovdje upotrijebiti funkciju "sort" zaglavlja "algorithm"
+    // * za razred Tocka treba definirati i kopirni operator pridruživanja
+    sort(tocke.begin(), tocke.end());
+    ispisi(tocke);  // ispisuje točke sortirane po rednom broju
+
+    //**************************************************************************
+    // [5] --- 2 BODA
+    cout << "--- [5] ---\n";
+
+    // * ovdje upotrijebiti funkciju "sort" zaglavlja "algorithm"
+    // * varijabla slaganje_tocaka mora sadrzavati lambda-izraz
+    sort(tocke.begin(), tocke.end(), slaganje_tocaka);
+    ispisi(tocke);  // ispisuje točke sortirane po rednom broju obratnim redoslijedom
+
+    //**************************************************************************
+    // [6] --- 6 BODOVA
+    cout << "--- [6] ---\n";
+
+    vector<ElementDnevnogReda*> red{ &t1, &t2, &t3, &t4 };
+    sort(red.begin(), red.end(), usporedba_tocaka);
+
+    //// Funkcijom "tekstualno" demonstrirati polimorfizam; razred ElementDnevnogReda
+    //// mora biti apstraktan s jednom funkcijom "tekstualno"!
+
+    ////// ispisuje točke sortirane po rednom broju
+    for (vector<ElementDnevnogReda*>::const_iterator itr = red.begin();
+        itr != red.end(); ++itr) {
+        cout << (*itr)->tekstualno() << endl;
+    }
+
+    //**************************************************************************
+    // [7] --- 6 BODOVA
+    cout << "--- [7] ---\n";
+
+    Tocka s(5, "Peta tocka", "Glasanje", new Odgovor("kolega A - za"));
+    Tocka z = s;
+
+    // nadovezuje tekst zadan s "nadodaj" s tekstom zadanim s konstruktoru
+    s.odgovor()->nadodaj("kolega B - protiv");
+
+    // ispisuje "kolega A - za; kolega B - protiv"
+    cout << s.odgovor()->tekst() << endl;
+
+    // ispisuje "kolega A - za"
+    cout << z.odgovor()->tekst() << endl;
+
+    //**************************************************************************
+    // [8] --- 5 BODOVA
+    cout << "--- [8] ---\n";
+
+    Zapisnik<Tocka> zapisnik;
+  //   Funkcija "nadodaj" mora biti napisana kao funkcija 
+  //   s neograničenim brojem parametara!
+   zapisnik.nadodaj(t1, t4, t2);
+
+    // ispisuje "Ad1;Tocka prva;Citanje zapisnika", "Ad3;Tocka treca;Plan rada", "Ad0;Tocka 0;Razno" 
+    // (jedno ispod drugoga)
+    zapisnik.ispisi();
+
+    //**************************************************************************
+    // [9] --- 2 BODA
+   cout << "--- [9] ---\n";
+
+     //Na kraju se mora ispisati broj koliko je objekata tipa Tocka uništeno!
+    cout << Tocka::unisteno << endl;
+    //**************************************************************************
+}
+
+
