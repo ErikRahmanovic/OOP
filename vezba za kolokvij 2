@@ -1,0 +1,94 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+
+class Let {
+public:
+    int sifra;
+    string destinacija;
+
+    Let(int _sifra, string _destinacija) : sifra(_sifra), destinacija(_destinacija) {}
+};
+
+class Pilot {
+private:
+    string ime;
+    int brojLetova;
+    int satiLetenja;
+    vector<Let> letovi;
+public:
+    static double ukupnoLetova;
+    static double brojPilota;
+
+    Pilot(string _ime, int _brojLetova, int _satiLetenja) : ime(_ime), brojLetova(_brojLetova), satiLetenja(_satiLetenja) {
+        setSatiLetenja(_satiLetenja);
+        ukupnoLetova += brojLetova;
+        brojPilota++;
+    }
+    
+    Pilot(string _ime, int _brojLetova, int _satiLetenja, initializer_list<Let> _letovi) : ime(_ime), brojLetova(_brojLetova), satiLetenja(_satiLetenja), letovi(_letovi) {
+        setSatiLetenja(_satiLetenja);
+        ukupnoLetova += brojLetova;
+        brojPilota++;
+    }
+    Pilot() {}
+
+    void setSatiLetenja(int sati) {
+        if (sati < 45) {
+            cout << "Broj sati letenja mora biti veci od 45" << endl;
+            cin >> sati;
+            setSatiLetenja(sati);
+        }
+        else {
+            satiLetenja = sati;
+        }
+    }
+
+    string getIme() {
+        return ime;
+    }
+    int getBrojLetova() {
+        return brojLetova;
+    }
+    int getSatiLetenja() {
+        return satiLetenja;
+    }
+
+     static double prosjekLetova();
+
+};
+double Pilot::prosjekLetova() {
+    double prosjecno;
+    prosjecno = ukupnoLetova / brojPilota;
+    return prosjecno;
+}
+
+double Pilot::ukupnoLetova = 0;
+double Pilot::brojPilota = 0;
+
+int main()
+{
+
+    vector<Pilot> pilot = { Pilot("Pero", 17, 443, {Let(101, "Zagreb"), Let(132, "Zagreb")}), Pilot("lvan", 19, 336), Pilot("Marko", 16, 336) };
+    
+    
+  
+    sort(pilot.begin(), pilot.end(), [](Pilot a, Pilot b) {
+        if (a.getSatiLetenja() == b.getSatiLetenja()) {
+            return a.getBrojLetova() < b.getBrojLetova();
+        }
+        return a.getSatiLetenja() < b.getSatiLetenja();
+        });
+
+    for (int i = 0; i < pilot.size(); i++) {
+        cout << pilot[i].getIme() << " " << pilot[i].getBrojLetova() << " " << pilot[i].getSatiLetenja() << endl;
+    }
+
+    cout << Pilot::prosjekLetova() << endl;
+
+    return 0;
+}
+
